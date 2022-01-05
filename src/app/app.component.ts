@@ -27,8 +27,22 @@ export class AppComponent implements OnInit {
   }
 
   initializeConversation(): void {
-    let userID = this.generateRandomUserID();
-    let name = this.generateRandomUserName();
+    let userId, userName, userInfo = sessionStorage.getItem("userInfo");
+    if (userInfo) {
+      userId = JSON.parse(userInfo).userId;
+      userName = JSON.parse(userInfo).userName;
+    } else {
+      userId = this.generateRandomUserID();
+      userName = this.generateRandomUserName();
+
+      sessionStorage.setItem(
+        "userInfo",
+        JSON.stringify({
+          userId: userId,
+          userName: userName
+        })
+      );
+    }
 
     const directLine = window.WebChat.createDirectLine({
       secret: "u_xRnDdnx-4.qlO1IKZocqyAbFg-wHkoxEQzIL-VGbXFDIWhFfmysow",
@@ -38,15 +52,15 @@ export class AppComponent implements OnInit {
     window.WebChat.renderWebChat(
       {
         directLine: directLine,
-        userID: userID
+        userID: userId
       },
       this.botWindowElement.nativeElement
     );
 
     directLine.postActivity({
       from: {
-        id: userID,
-        name: name
+        id: userId,
+        name: userName
       },
       name: "requestWelcomeDialog",
       type: "event",
