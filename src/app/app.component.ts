@@ -27,6 +27,9 @@ export class AppComponent implements OnInit {
   }
 
   initializeConversation(): void {
+    let userID = this.generateRandomUserID();
+    let name = this.generateRandomUserName();
+
     const directLine = window.WebChat.createDirectLine({
       secret: "u_xRnDdnx-4.qlO1IKZocqyAbFg-wHkoxEQzIL-VGbXFDIWhFfmysow",
       webSocket: false
@@ -35,15 +38,15 @@ export class AppComponent implements OnInit {
     window.WebChat.renderWebChat(
       {
         directLine: directLine,
-        userID: "USER_ID"
+        userID: userID
       },
       this.botWindowElement.nativeElement
     );
 
     directLine.postActivity({
       from: {
-        id: "USER_ID",
-        name: "USER_NAME"
+        id: userID,
+        name: name
       },
       name: "requestWelcomeDialog",
       type: "event",
@@ -56,5 +59,29 @@ export class AppComponent implements OnInit {
         console.log(`Error posting activity ${error}`)
       }
     );
+  }
+
+  generateRandomUserID(): string {
+    var result = '';
+    var characters = '0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+
+    return result;
+  }
+
+  generateRandomUserName(): string {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_';
+    var charactersLength = characters.length;
+    for (var i = 0; i < 5; i++) {
+      result += characters.charAt(Math.floor(Math.random() *
+        charactersLength));
+    }
+
+    return result;
   }
 }
